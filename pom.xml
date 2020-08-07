@@ -373,6 +373,10 @@
                             <onlyGetDriversForHostOperatingSystem>true</onlyGetDriversForHostOperatingSystem>
                             <rootStandaloneServerDirectory>.driver</rootStandaloneServerDirectory>
                             <customRepositoryMap>webdrivers.xml</customRepositoryMap>
+                            <getSpecificExecutableVersions>
+                                 <googlechrome>84</googlechrome>
+                            </getSpecificExecutableVersions>
+                            <overwriteFilesThatExist>true</overwriteFilesThatExist>
                         </configuration>
                         <executions>
                             <execution>
