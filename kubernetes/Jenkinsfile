@@ -61,6 +61,7 @@ stages {
         publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '**/target/gatling/*', reportFiles: 'index.html', reportName: "Gatling Report" ])
         }
     }
+    }
     stage('Promote to prod?') {
     agent {
         label 'skopeo'
