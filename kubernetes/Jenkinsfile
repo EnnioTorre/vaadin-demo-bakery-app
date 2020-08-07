@@ -1,4 +1,4 @@
-def mvnCmd = "mvn"
+def mvnCmd = "mvn --batch-mode"
 pipeline {
 agent {
     label 'maven'
@@ -9,13 +9,13 @@ stages {
         sh "${mvnCmd} com.github.eirslett:frontend-maven-plugin:1.7.6:install-node-and-npm -DnodeVersion=\"v10.16.0\""
         // git branch: 'eap-7', url: 'http://gogs:3000/gogs/openshift-tasks.git'
         sh "${mvnCmd} clean test -Pproduction"
-        step([$class: 'JUnitResultArchiver', testResults: './target/surefire-reports/.*xml'])
+        step([$class: 'JUnitResultArchiver', testResults: './target/surefire-reports/*.xml'])
     }
     }
     stage('Integration Testing') {
     steps {
         sh "${mvnCmd} clean verify -Pit -Dvaadin.proKey=ennioTmad@gmail.com/pro-0a3ab60e-06e2-4c41-b9dc-054060431be6"
-        step([$class: 'JUnitResultArchiver', testResults: './target/surefire-reports/.*xml'])
+        step([$class: 'JUnitResultArchiver', testResults: './target/surefire-reports/*.xml'])
     }
     }
     // stage('Linter') {
