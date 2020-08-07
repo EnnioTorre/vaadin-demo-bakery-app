@@ -1,0 +1,93 @@
+def mvnCmd = "mvn"
+pipeline {
+agent {
+    label 'maven'
+}
+stages {
+    stage('Unit Testing') {
+    steps {
+        sh "${mvnCmd} com.github.eirslett:frontend-maven-plugin:1.7.6:install-node-and-npm -DnodeVersion=\"v10.16.0\""
+        // git branch: 'eap-7', url: 'http://gogs:3000/gogs/openshift-tasks.git'
+        sh "${mvnCmd} clean test -Pproduction -DskipTests=true"
+        step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/.*xml'])
+    }
+    }
+    stage('Integration Testing') {
+    steps {
+        sh "${mvnCmd} mvn verify -Pit "
+        step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+    }
+    }
+    // stage('Linter') {
+    // steps {
+    //    sh "${mvnCmd} mvn verify -Pit"
+    //    step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+    //}
+    //}
+    //} 
+    stage('Build App') {
+    steps {
+        sh "${mvnCmd} package -DrunLint -DskipTests=true -Pproduction"
+    }
+    }
+    stage('Build Image') {
+    steps {
+        sh "cp target/openshift-tasks.war target/ROOT.war"
+        script {
+        openshift.withCluster() {
+            openshift.withProject(env.DEV_PROJECT) {
+            openshift.selector("bc", "${APP_NAME}").startBuild("--from-file=target/ROOT.war", "--wait=true")
+            }
+        }
+        }
+    }
+    }
+    stage('Deploy DEV') {
+    steps {
+        script {
+        openshift.withCluster() {
+            openshift.withProject(env.DEV_PROJECT) {
+            openshift.selector("dc", "${APP_NAME}").rollout().latest();
+            }
+        }
+        }
+    }
+    }
+    stage('Scalability test') {
+    steps {
+        script {
+        sh "${mvnCmd} mvn -Pscalability gatling:test -Dgatling.baseUrl=${APP_NAME}.scv:8080"
+        //target/gatling/BaristaFlow-1487784042461/index.html
+        publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '**/target/gatling/*', reportFiles: 'index.html', reportName: "Gatling Report" ])
+        }
+    }
+    stage('Promote to prod?') {
+    agent {
+        label 'skopeo'
+    }
+    steps {
+        timeout(time:15, unit:'MINUTES') {
+            input message: "Promote to prod?", ok: "Promote"
+        }
+        script {
+        openshift.withCluster() {
+            withCredentials([usernamePassword(credentialsId: "quay-cicd-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
+                sh "skopeo copy docker://${QUAY_REPOSITORY}:dev docker://${QUAY_REPOSITORY}:prod --src-creds \"$QUAY_USER:$QUAY_PWD\" --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false"
+            }
+        }
+        }
+    }
+    }
+    stage('Deploy prod') {
+    steps {
+        script {
+        openshift.withCluster() {
+            openshift.withProject(env.PROD_PROJECT) {
+            openshift.selector("dc", "tasks").rollout().latest();
+            }
+        }
+        }
+    }
+    }
+}
+}
