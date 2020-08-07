@@ -36,6 +36,8 @@ public abstract class AbstractIT<E extends TestBenchElement> extends ParallelTes
 			options.addArguments("--headless", "--disable-gpu", "--no-proxy-server", "--no-sandbox");
 			setDriver(new ChromeDriver(options));
 			driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+			driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+			driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
 			APP_URL = "http://" + IPAddress.findSiteLocalAddress() + ":8080/";
         }
 		if (getRunLocallyBrowser() == null) {
