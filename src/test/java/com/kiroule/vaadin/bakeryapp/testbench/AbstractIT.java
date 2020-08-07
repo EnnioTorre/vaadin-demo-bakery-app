@@ -32,7 +32,6 @@ public abstract class AbstractIT<E extends TestBenchElement> extends ParallelTes
 	public void setup() throws Exception {	
 		if ( getRunLocallyBrowser() != null) {
             ChromeOptions options= new ChromeOptions();
-			options.setHeadless(true);
 			options.addArguments("--headless", "--disable-gpu", "--no-sandbox");
 			setDriver(new ChromeDriver(options));
 			APP_URL = "http://" + IPAddress.findSiteLocalAddress() + ":8080/";
