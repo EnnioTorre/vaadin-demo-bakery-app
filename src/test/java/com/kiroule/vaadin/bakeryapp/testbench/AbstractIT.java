@@ -15,6 +15,7 @@ import com.vaadin.testbench.ScreenshotOnFailureRule;
 import com.vaadin.testbench.TestBenchDriverProxy;
 import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.parallel.ParallelTest;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractIT<E extends TestBenchElement> extends ParallelTest {
 	public String APP_URL = "http://localhost:8080/";
@@ -34,6 +35,7 @@ public abstract class AbstractIT<E extends TestBenchElement> extends ParallelTes
 			options.setHeadless(true);
 			options.addArguments("--headless", "--disable-gpu", "--no-proxy-server", "--no-sandbox");
 			setDriver(new ChromeDriver(options));
+			driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 			APP_URL = "http://" + IPAddress.findSiteLocalAddress() + ":8080/";
         }
 		if (getRunLocallyBrowser() == null) {
