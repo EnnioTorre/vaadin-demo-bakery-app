@@ -57,7 +57,8 @@ stages {
         script {
         sh "${mvnCmd} -Pscalability gatling:test -Dgatling.baseUrl=http://${APP_NAME}.${DEV_PROJECT}.svc:8080"
         //target/gatling/BaristaFlow-1487784042461/index.html
-        publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'target/gatling/baristaflow-*', reportFiles: 'index.html', reportName: "Gatling Report" ])
+        sh "mkdir -p test-results/gatling && cp target/gatling/baristaflow-*/index.html test-results/gatling/index.html"
+        publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'test-results/gatling', reportFiles: 'index.html', reportName: "Gatling Report" ])
         }
     }
     }
@@ -71,7 +72,7 @@ stages {
         }
         script {
         openshift.withCluster() {
-            withCredentials([usernamePassword(credentialsId: "${APP_NAME}-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
+            withCredentials([usernamePassword(credentialsId: "${openshift.project()}-${APP_NAME}-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
                 sh "skopeo copy docker://${QUAY_REPOSITORY}:dev docker://${QUAY_REPOSITORY}:prod --src-creds \"$QUAY_USER:$QUAY_PWD\" --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false"
             }
         }
