@@ -14,8 +14,8 @@ stages {
     }
     stage('Integration Testing') {
     steps {
-        sh "${mvnCmd} clean verify -Pit -Dvaadin.proKey=ennioTmad@gmail.com/pro-0a3ab60e-06e2-4c41-b9dc-054060431be6"
-        step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/*.xml'])
+        sh "${mvnCmd} clean verify -Pit -Pproduction -Dvaadin.proKey=ennioTmad@gmail.com/pro-0a3ab60e-06e2-4c41-b9dc-054060431be6"
+        step([$class: 'JUnitResultArchiver', testResults: '**/target/failsafe-reports/*.xml'])
     }
     }
     // stage('Linter') {
@@ -63,9 +63,9 @@ stages {
     stage('Scalability test') {
     steps {
         script {
-        sh "${mvnCmd} -Pscalability gatling:test -Dgatling.baseUrl=\"http://${APP_NAME}.${DEV_PROJECT}.scv:8080\""
+        sh "${mvnCmd} -Pscalability gatling:test -Dgatling.baseUrl=http://${APP_NAME}.${DEV_PROJECT}.svc:8080"
         //target/gatling/BaristaFlow-1487784042461/index.html
-        publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '**/target/gatling/*', reportFiles: 'index.html', reportName: "Gatling Report" ])
+        publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '**/target/gatling/*/', reportFiles: 'index.html', reportName: "Gatling Report" ])
         }
     }
     }
@@ -79,7 +79,7 @@ stages {
         }
         script {
         openshift.withCluster() {
-            withCredentials([usernamePassword(credentialsId: "quay-cicd-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
+            withCredentials([usernamePassword(credentialsId: "${APP_NAME}-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
                 sh "skopeo copy docker://${QUAY_REPOSITORY}:dev docker://${QUAY_REPOSITORY}:prod --src-creds \"$QUAY_USER:$QUAY_PWD\" --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false"
             }
         }
