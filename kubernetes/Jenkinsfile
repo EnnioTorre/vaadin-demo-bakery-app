@@ -63,7 +63,7 @@ stages {
     stage('Scalability test') {
     steps {
         script {
-        sh "${mvnCmd} -Pscalability gatling:test -Dgatling.baseUrl=${APP_NAME}.${DEV_PROJECT}.scv:8080"
+        sh "${mvnCmd} -Pscalability gatling:test -Dgatling.baseUrl=\"http://${APP_NAME}.${DEV_PROJECT}.scv:8080\""
         //target/gatling/BaristaFlow-1487784042461/index.html
         publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '**/target/gatling/*', reportFiles: 'index.html', reportName: "Gatling Report" ])
         }

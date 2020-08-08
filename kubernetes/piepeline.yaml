@@ -11,11 +11,11 @@ metadata:
 message: "Use the following credentials for login:\nJenkins: use your OpenShift credentials\nApplication: admin@vaadin.com/admin"
 parameters:
 - displayName: DEV project name
-  value: dev-rcp1
+  value: dev-rcp-1
   name: DEV_PROJECT
   required: true
 - displayName: PROD project name
-  value: prod-demoBakery
+  value: prod-demobakery
   name: PROD_PROJECT
   required: true
 - description: Webhook secret
@@ -27,7 +27,7 @@ parameters:
   description: Quay.io repository for pushing Tasks container images
   name: QUAY_REPOSITORY
   required: true
-  value: tasks-app
+  value: demobakery
 - displayName: Application name
   description: Name of the application
   name: APP_NAME
