@@ -72,7 +72,7 @@ stages {
         }
         script {
         openshift.withCluster() {
-            withCredentials([usernamePassword(credentialsId: "${openshift.project()}-${APP_NAME}-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
+            withCredentials([usernamePassword(credentialsId: "${openshift.project()}-quay-cicd-secret", usernameVariable: "QUAY_USER", passwordVariable: "QUAY_PWD")]) {
                 sh "skopeo copy docker://${QUAY_REPOSITORY}:dev docker://${QUAY_REPOSITORY}:prod --src-creds \"$QUAY_USER:$QUAY_PWD\" --dest-creds \"$QUAY_USER:$QUAY_PWD\" --src-tls-verify=false --dest-tls-verify=false"
             }
         }
