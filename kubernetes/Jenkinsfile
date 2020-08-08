@@ -37,7 +37,7 @@ stages {
         script {
         openshift.withCluster() {
             openshift.withProject(env.DEV_PROJECT) {
-            openshift.selector("bc", "${APP_NAME}").startBuild("--from-file=target/ROOT.war", "--wait=true")
+            openshift.selector("bc", "${APP_NAME}").startBuild("--from-file=target/ROOT.war", "--wait=true", "--follow")
             }
         }
         }
@@ -48,7 +48,12 @@ stages {
         script {
         openshift.withCluster() {
             openshift.withProject(env.DEV_PROJECT) {
-            openshift.selector("dc", "${APP_NAME}").rollout().latest();
+             openshift.selector("dc", "${APP_NAME}").rollout().latest();
+             timeout (time: 10, unit: 'MINUTES') {
+              // this will wait until the desired replicas are available
+              deployments.rollout().status()
+            
+            }
             }
         }
         }
@@ -57,7 +62,7 @@ stages {
     stage('Scalability test') {
     steps {
         script {
-        sh "${mvnCmd} mvn -Pscalability gatling:test -Dgatling.baseUrl=${APP_NAME}.scv:8080"
+        sh "${mvnCmd} -Pscalability gatling:test -Dgatling.baseUrl=${APP_NAME}.${DEV_PROJECT}.scv:8080"
         //target/gatling/BaristaFlow-1487784042461/index.html
         publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '**/target/gatling/*', reportFiles: 'index.html', reportName: "Gatling Report" ])
         }
