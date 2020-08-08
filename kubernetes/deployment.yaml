@@ -169,7 +169,7 @@ objects:
       name: ${APP_NAME}
       weight: 100
     wildcardPolicy: None
-# QUAY.IO SECRET
+# QUAY.IO APP SECRET
 - apiVersion: v1
   data:
     .dockerconfigjson: eyJhdXRocyI6eyJxdWF5LmlvIjp7InVzZXJuYW1lIjoiZW5uaW90b3JyZStvc2J1aWxkZXIiLCJwYXNzd29yZCI6IjIzUVAwT0tNV0NLREtQQ1JNVVREMVc0RFI2WjM2WFA0N1lRS0JHRURHWERBS1VYV05WVVBTU1FZRlc3U09STEwiLCJhdXRoIjoiWlc1dWFXOTBiM0p5WlN0dmMySjFhV3hrWlhJNk1qTlJVREJQUzAxWFEwdEVTMUJEVWsxVlZFUXhWelJFVWpaYU16WllVRFEzV1ZGTFFrZEZSRWRZUkVGTFZWaFhUbFpWVUZOVFVWbEdWemRUVDFKTVRBPT0ifX19
@@ -178,3 +178,15 @@ objects:
     name: ${APP_NAME}-secret
     namespace: ${PROJECT}
   type: kubernetes.io/dockerconfigjso
+# QUAY.IO PIPE SECRET
+- apiVersion: v1
+  data:
+    password: MjNRUDBPS01XQ0tES1BDUk1VVEQxVzREUjZaMzZYUDQ3WVFLQkdFREdYREFLVVhXTlZVUFNTUVlGVzdTT1JMTA==
+    username: ZW5uaW90b3JyZStvc2J1aWxkZXI=
+  kind: Secret
+  metadata:
+    labels:
+      credential.sync.jenkins.openshift.io: "true"
+    name: quay-cicd-secret
+    namespace: ${PROJECT}
+  type: Opaque

@@ -98,6 +98,8 @@ objects:
           value: ${PROD_PROJECT}
         - name: APP_NAME
           value: ${APP_NAME}
+        - name: QUAY_REPOSITORY
+          value: ${QUAY_REPOSITORY}
         jenkinsfilePath: ./kubernetes/Jenkinsfile
       type: JenkinsPipeline
     source:
