@@ -58,7 +58,7 @@ stages {
         sh "${mvnCmd} -Pscalability gatling:test -Dgatling.baseUrl=http://${APP_NAME}.${DEV_PROJECT}.svc:8080"
         //target/gatling/BaristaFlow-1487784042461/index.html
         sh "mkdir -p test-results/gatling && cp target/gatling/baristaflow-*/index.html test-results/gatling/index.html"
-        publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'test-results/gatling', reportFiles: 'index.html', reportName: "Gatling Report" ])
+        publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'test-results/gatling', reportFiles: 'index.html', reportName: "Gatling Report" ])
         }
     }
     }
