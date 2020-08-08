@@ -48,7 +48,7 @@ stages {
         script {
         openshift.withCluster() {
             openshift.withProject(env.DEV_PROJECT) {
-             def deployments=openshift.selector("dc", "${APP_NAME}").rollout().latest();
+             def deployments = openshift.selector("dc", "${APP_NAME}");
              deployments.rollout().latest();
              timeout (time: 10, unit: 'MINUTES') {
               // this will wait until the desired replicas are available
@@ -91,7 +91,7 @@ stages {
         script {
         openshift.withCluster() {
             openshift.withProject(env.PROD_PROJECT) {
-            def deployments=openshift.selector("dc", "tasks");
+            def deployments = openshift.selector("dc", "${APP_NAME}");
             deployments.rollout().latest();
              timeout (time: 10, unit: 'MINUTES') {
               // this will wait until the desired replicas are available
