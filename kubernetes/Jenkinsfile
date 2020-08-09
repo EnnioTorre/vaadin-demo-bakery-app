@@ -8,7 +8,7 @@ stages {
     steps {
         sh "${mvnCmd} com.github.eirslett:frontend-maven-plugin:1.7.6:install-node-and-npm -DnodeVersion=\"v10.16.0\""
         sh "${mvnCmd} clean package -DrunLint -DskipTests=true -Pproduction"
-        archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
+        
     }
     }
     stage('Unit Testing') {
@@ -58,7 +58,8 @@ stages {
         sh "${mvnCmd} -Pscalability gatling:test -Dgatling.baseUrl=http://${APP_NAME}.${DEV_PROJECT}.svc:8080"
         //target/gatling/BaristaFlow-1487784042461/index.html
         sh "mkdir -p test-results/gatling && cp -r target/gatling/baristaflow-*/* test-results/gatling"
-        publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'test-results/gatling', reportFiles: '*.html', reportName: "Gatling Report" ])
+        archiveArtifacts artifacts: '**/test-results/gatling/**/*.*', fingerprint: true
+        // publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'test-results/gatling', reportFiles: '*.html', reportName: "Gatling Report" ])
         }
     }
     }
