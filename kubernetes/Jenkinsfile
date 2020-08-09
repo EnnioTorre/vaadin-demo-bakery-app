@@ -58,8 +58,8 @@ stages {
         sh "${mvnCmd} -Pscalability gatling:test -Dgatling.baseUrl=http://${APP_NAME}.${DEV_PROJECT}.svc:8080"
         //target/gatling/BaristaFlow-1487784042461/index.html
         sh "mkdir -p test-results/gatling && cp -r target/gatling/baristaflow-*/* test-results/gatling"
-        archiveArtifacts artifacts: '**/test-results/gatling/**/*.*', fingerprint: true
-        // publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'test-results/gatling', reportFiles: '*.html', reportName: "Gatling Report" ])
+        //archiveArtifacts artifacts: '**/test-results/gatling/**/*.*', fingerprint: true
+        publishHTML (target: [ allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'test-results/gatling', reportFiles: '**/*', reportName: "Gatling Report" ])
         }
     }
     }
