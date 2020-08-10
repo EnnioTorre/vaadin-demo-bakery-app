@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-service-monitor
+  namespace: dev-rcp-1
+  labels:
+    name: prometheus-service-monitor
+    app: prometheus-app
+    project: dev-rcp-1
+spec:
+  namespaceSelector:
+    matchNames:
+      - dev-rcp-1
+  selector:
+    matchLabels:
+      app: backerydemo
+  endpoints:
+    - port: http-port
+      path: /actuator/prometheus
+      interval: 30s

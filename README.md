@@ -132,7 +132,7 @@ In order to run the scalability tests locally:
 
 1. Test results are stored into target folder (e.g. to ```target/gatling/BaristaFlow-1487784042461/index.html```)
 
-1. By default the scalability test starts 100 user sessions at a 100 ms interval for one repeat, all of which connect to a locally running Bakery app. These defaults can be overridden with the `gatling.sessionCount`, `gatling.sessionStartInterval` `gatling.sessionRepeats`, and `gatling.baseUrl` system properties. See an example execution for 300 users started within 50 s:
+1. By default the scalability test starts 100 user sessions at a 100 ms interval for one repeat, all of which connect to a locally running Bakery app. These defaults can be overridden with the `gatling.sessionCount`, `gatling.sessionStartInterval` `gatling.sessionRepeats`, and `` system properties. See an example execution for 300 users started within 50 s:
 
     ```sh
     mvn -Pscalability gatling:test -Dgatling.sessionCount=300 -Dgatling.sessionStartInterval=50
