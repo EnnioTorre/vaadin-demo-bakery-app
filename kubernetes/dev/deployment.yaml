@@ -7,9 +7,9 @@ metadata:
   name: demobackery
   description: "Template containing application artifacts."
 parameters:
-- displayName: project name
+- displayName: DEV_PROJECT name
   value: dev-rcp-1
-  name: PROJECT
+  name: DEV_PROJECT
   required: true
 - displayName: Quay.io Image Repository
   description: Quay.io repository for pushing Tasks container images
@@ -52,7 +52,7 @@ objects:
     labels:
       app: ${APP_NAME}
     name: ${APP_NAME}
-    namespace: ${PROJECT}
+    namespace: ${DEV_PROJECT}
   spec:
     replicas: ${{REPLICAS}}
     selector:
@@ -90,9 +90,6 @@ objects:
             httpGet:
               path: /actuator/health
               port: 8080
-              httpHeaders:
-                - name: Authorization
-                  value: Basic YWRtaW5AdmFhZGluLmNvbTphZG1pbg==
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
         dnsPolicy: ClusterFirst
@@ -110,7 +107,7 @@ objects:
       app: ${APP_NAME}
       build: ${APP_NAME}
     name: ${APP_NAME}
-    namespace: ${PROJECT} 
+    namespace: ${DEV_PROJECT} 
   spec:
     failedBuildsHistoryLimit: 5
     nodeSelector: null
@@ -142,7 +139,7 @@ objects:
     labels:
       app: ${APP_NAME}
     name: ${APP_NAME}
-    namespace: ${PROJECT}
+    namespace: ${DEV_PROJECT}
   spec:
     ports:
     - name: http-port
@@ -160,7 +157,7 @@ objects:
     labels:
       app: ${APP_NAME}
     name: ${APP_NAME}
-    namespace: ${PROJECT}
+    namespace: ${DEV_PROJECT}
   spec:
     port:
       targetPort: http-port
@@ -176,7 +173,7 @@ objects:
   kind: Secret
   metadata:
     name: ${APP_NAME}-secret
-    namespace: ${PROJECT}
+    namespace: ${DEV_PROJECT}
   type: kubernetes.io/dockerconfigjso
 # QUAY.IO PIPE SECRET
 - apiVersion: v1
@@ -188,5 +185,5 @@ objects:
     labels:
       credential.sync.jenkins.openshift.io: "true"
     name: quay-cicd-secret
-    namespace: ${PROJECT}
+    namespace: ${DEV_PROJECT}
   type: Opaque
